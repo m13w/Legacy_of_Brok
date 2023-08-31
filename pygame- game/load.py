@@ -1,5 +1,5 @@
 import pygame
-background_image = pygame.image.load("background1.jpg")
+background_image = pygame.image.load("Legacy_of_Brok/pygame- game/background1.jpg")
 player_image = pygame.image.load("character.png")
 pygame.image.load("enemy.png")
 pygame.image.load("enemy2.png")
