@@ -5,7 +5,7 @@ import random
 from load import background_image, player_image, enemy_images, reset_image, gun_image, projectile_image, drop_image
 import sys
 """ un brotato cu mecanici de upgrade de chicken invaders """
-#popeu
+
 PLAYER_COL_RADIUS = 40
 ENEMY_COL_RADIUS = 40
 enemies = []
