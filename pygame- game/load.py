@@ -9,7 +9,7 @@ reset_image = pygame.image.load("Legacy_of_Brok/pygame- game/reset.png")
 reset_image = pygame.transform.scale(reset_image,(300, 100))
 
 gun_image = pygame.image.load("Legacy_of_Brok/pygame- game/gun.png")
-gun_image = pygame.transform.scale(gun_image, (50, 50))
+gun_image = pygame.transform.scale(gun_image, (80, 80))
 
 projectile_image = pygame.image.load("Legacy_of_Brok/pygame- game/bullet.png")
 projectile_image = pygame.transform.scale(projectile_image, (20,20))
