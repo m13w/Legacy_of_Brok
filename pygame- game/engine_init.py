@@ -1,7 +1,7 @@
 import pygame
 import math
-from load import gun_image, gun_image_rev, projectile_image,drop_image, shot_effect
-from user_settings import ENEMY_COL_RADIUS, PLAYER_COL_RADIUS
+from load import gun_image, gun_image_rev, projectile_image,drop_image
+from user_settings import ENEMY_COL_RADIUS, PLAYER_COL_RADIUS, BULLET_SPEED
 
 enemies = []
 active_items = []
@@ -54,7 +54,7 @@ class Player:
         self.gun_angle = 0
         self.projectiles = []
         self.shoot_cooldown = 0
-        self.shoot_delay = 0.2
+        self.shoot_delay = 0.35
         self.gun_direction = pygame.Vector2(1, 0)
         self.level = 0
         self.window_bounds = pygame.display.get_surface().get_rect() # Get window bounds
@@ -69,7 +69,7 @@ class Player:
             firing_point = self.gun_rect.center 
 
             # Calculate the bullet's velocity
-            bullet_velocity = direction.normalize() * 650  # Adjust the bullet speed as needed
+            bullet_velocity = direction.normalize() * BULLET_SPEED   # Adjust the bullet speed as needed
 
             # Create and append the bullet with the current gun angle
             bullet = Bullet(projectile_image, firing_point, bullet_velocity, self.gun_angle)
