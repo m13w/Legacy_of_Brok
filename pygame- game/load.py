@@ -1,16 +1,19 @@
 import pygame
 
-# Define the base path to your assets folder
 ASSETS_PATH = "Legacy_of_Brok/pygame- game/assets/"
 
-# Load the images
 background_image = pygame.image.load(ASSETS_PATH + "background1.jpg")
-player_image = pygame.image.load(ASSETS_PATH + "character.png")
+
 enemy_image1 = pygame.image.load(ASSETS_PATH + "enemy.png")
 enemy_image2 = pygame.image.load(ASSETS_PATH + "enemy2.png")
 enemy_image3 = pygame.image.load(ASSETS_PATH + "enemy3.gif")
+enemy_image4 = pygame.image.load(ASSETS_PATH + "enemy4.png")
+enemy_image5 = pygame.image.load(ASSETS_PATH + "enemy5.png")
 
 # Scale the images
+player_image = pygame.image.load(ASSETS_PATH + "character.png")
+player_image = pygame.transform.scale(player_image, (90, 110))
+
 reset_image = pygame.image.load(ASSETS_PATH + "reset.png")
 reset_image = pygame.transform.scale(reset_image, (300, 100))
 
@@ -32,5 +35,7 @@ shot_effect = pygame.transform.scale(shot_effect, (50, 100))
 enemy_images = [
     pygame.transform.scale(enemy_image1, (100, 100)),
     pygame.transform.scale(enemy_image2, (100, 100)),
-    pygame.transform.scale(enemy_image3, (100, 100))
+    pygame.transform.scale(enemy_image3, (100, 100)),
+    pygame.transform.scale(enemy_image4, (85, 100)),
+    pygame.transform.scale(enemy_image5, (100, 100))
 ]

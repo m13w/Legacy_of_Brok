@@ -1,11 +1,12 @@
-""" un brotato cu mecanici de upgrade de chicken invaders - main file by VladIfju and CiprianPopa"""
+"""
+Brotato with chicken invaders upgrade mechanics - main file developed by VladIfju and CiprianPopa
+"""
 import pygame
-import pygame.mask
 import random
+import sys
 from user_settings import ENEMY_SPAWN_RATE, WINDOW_WIDTH, WINDOW_HEIGHT
 from engine_init import Crystal, Player, Enemy, Explosion, active_items
 from load import background_image, player_image, enemy_images, reset_image, shot_effect
-import sys
 
 # pygame setup
 pygame.init()
@@ -13,17 +14,11 @@ screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 clock = pygame.time.Clock()
 running = True
 game_over = False
-dt = 0
 pygame.display.set_caption("Legacy of Brok")
-
-# Load your character image
 pygame.display.set_icon(player_image)
 font = pygame.font.Font(None, 64)
+dt = 0
 
-# Resize the character image
-player_image = pygame.transform.scale(player_image, (90, 110))
-
-# button for reset UI
 reset_button_rect = reset_image.get_rect()
 reset_button_rect.center = (screen.get_width() / 2, screen.get_height() / 2 + 100)
 
@@ -42,7 +37,6 @@ def reset_game() -> None:
     player.level = 0  # Reset level
     active_items.clear()
 
-
 #MAIN GAME LOOP
 while running:
     for event in pygame.event.get():
@@ -53,12 +47,11 @@ while running:
 
     if not game_over:
         screen.blit(background_image, (0, 0))  #DRAW BACKGROUND
-
         keys = pygame.key.get_pressed()
         player.update(dt, keys, mouse_pos=mouse_pos)
         player.draw(screen)
 
-        # Detect and handle bullet-enemy collisions
+        # Detect and handle bullet-enemy collisions + explosions
         for bullet in player.projectiles[:]:
             bullet.update(dt)
             for enemy in enemies[:]:
@@ -68,9 +61,7 @@ while running:
                     enemy.kill()
                     explosion = Explosion(shot_effect, enemy.rect.center, 200) # 200 = ms
                     active_explosions.append(explosion)
-                    break
-
-                
+                    break   
         for explosion in active_explosions[:]:
             if explosion.update():
                 active_explosions.remove(explosion)
@@ -89,8 +80,8 @@ while running:
                 game_over = True
                 break
 
-        # Spawn enemies from random edges
-        if random.random() < ENEMY_SPAWN_RATE:  #SPAWN RATE
+        #Spawning mechanism
+        if random.random() < ENEMY_SPAWN_RATE: 
             spawn_edge = random.choice(["top", "bottom", "left", "right"])
             if spawn_edge == "top":
                 spawn_point = pygame.Vector2(random.uniform(0, screen.get_width()), 0)
@@ -107,7 +98,6 @@ while running:
 
         for bullet in player.projectiles:
             bullet.update(dt)
-
             rotated_bullet = pygame.transform.rotate(bullet.image, -bullet.angle)  # Rotate bullet image
             rotated_rect = rotated_bullet.get_rect(center=bullet.rect.center)
             screen.blit(rotated_bullet, rotated_rect.topleft)
@@ -120,7 +110,6 @@ while running:
         for item in active_items[:]:
             if isinstance(item, Crystal):
                 item.draw(screen)
-
             item.draw(screen)
         
     else:
@@ -133,10 +122,8 @@ while running:
         if reset_button_rect.collidepoint(mouse_x, mouse_y) and mouse_clicked[0]:
             reset_game()
 
-    # flip() the display to put your work on screen
     pygame.display.flip()
-    # limits FPS to 60
-    dt = clock.tick(60) / 1000
+    dt = clock.tick(60) / 1000  # limits FPS to 60
 
 pygame.quit()
 sys.exit()
