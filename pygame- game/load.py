@@ -26,6 +26,9 @@ projectile_image = pygame.transform.scale(projectile_image, (20, 20))
 drop_image = pygame.image.load(ASSETS_PATH + "drop.png")
 drop_image = pygame.transform.scale(drop_image, (40, 40))
 
+shot_effect = pygame.image.load(ASSETS_PATH + "shot_effect.png")
+shot_effect = pygame.transform.scale(shot_effect, (50, 100))
+
 enemy_images = [
     pygame.transform.scale(enemy_image1, (100, 100)),
     pygame.transform.scale(enemy_image2, (100, 100)),

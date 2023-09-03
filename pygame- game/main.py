@@ -2,15 +2,14 @@
 import pygame
 import pygame.mask
 import random
-from engine_init import Crystal, Player, Enemy, active_items
-from load import background_image, player_image, enemy_images, reset_image, gun_image, projectile_image, drop_image
+from user_settings import ENEMY_SPAWN_RATE, WINDOW_WIDTH, WINDOW_HEIGHT
+from engine_init import Crystal, Player, Enemy, Explosion, active_items
+from load import background_image, player_image, enemy_images, reset_image, shot_effect
 import sys
-
-ENEMY_SPAWN_RATE = 0.02
 
 # pygame setup
 pygame.init()
-screen = pygame.display.set_mode((1280, 720))
+screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 clock = pygame.time.Clock()
 running = True
 game_over = False
@@ -30,6 +29,7 @@ reset_button_rect.center = (screen.get_width() / 2, screen.get_height() / 2 + 10
 
 player = Player(player_image, (screen.get_width() / 2, screen.get_height() / 2))
 enemies = []
+active_explosions = []
 
 def reset_game() -> None:
     global game_over, player_pos, enemies, active_items
@@ -58,7 +58,6 @@ while running:
         player.update(dt, keys, mouse_pos=mouse_pos)
         player.draw(screen)
 
-
         # Detect and handle bullet-enemy collisions
         for bullet in player.projectiles[:]:
             bullet.update(dt)
@@ -67,7 +66,16 @@ while running:
                     player.projectiles.remove(bullet)
                     enemies.remove(enemy)
                     enemy.kill()
+                    explosion = Explosion(shot_effect, enemy.rect.center, 200) # 200 = ms
+                    active_explosions.append(explosion)
                     break
+
+                
+        for explosion in active_explosions[:]:
+            if explosion.update():
+                active_explosions.remove(explosion)
+            else:
+                explosion.draw(screen)
 
         # Remove bullets and enemies when off-screen
         for bullet in player.projectiles[:]:

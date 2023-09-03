@@ -1,13 +1,26 @@
 import pygame
 import math
-from load import gun_image, gun_image_rev, projectile_image,drop_image
+from load import gun_image, gun_image_rev, projectile_image,drop_image, shot_effect
+from user_settings import ENEMY_COL_RADIUS, PLAYER_COL_RADIUS
 
-PLAYER_COL_RADIUS = 40
-ENEMY_COL_RADIUS = 40
-WINDOW_WIDTH = 1280
-WINDOW_HEIGHT = 720
 enemies = []
 active_items = []
+
+class Explosion:
+    def __init__(self, image, position, duration) -> None:
+        self.image = image
+        self.rect = image.get_rect(center= position)
+        self.duration = duration
+        self.start_time = pygame.time.get_ticks()
+    
+    def update(self):
+        current_time = pygame.time.get_ticks()
+        if current_time - self.start_time >= self.duration:
+            return True
+        return False
+
+    def draw(self, screen):
+        screen.blit(self.image, self.rect.topleft)
 
 class Crystal:
     def __init__(self, image, position):
