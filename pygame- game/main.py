@@ -7,6 +7,7 @@ import sys
 from user_settings import ENEMY_SPAWN_RATE, WINDOW_WIDTH, WINDOW_HEIGHT
 from engine_init import Crystal, Player, Enemy, Explosion, active_items
 from load import background_image, player_image, enemy_images, reset_image, shot_effect
+from engine_init import XPBar
 
 # pygame setup
 pygame.init()
@@ -17,12 +18,14 @@ game_over = False
 pygame.display.set_caption("Legacy of Brok")
 pygame.display.set_icon(player_image)
 font = pygame.font.Font(None, 64)
+max_xp = 10
+xp_bar = XPBar(max_xp=max_xp)
 dt = 0
 
 reset_button_rect = reset_image.get_rect()
 reset_button_rect.center = (screen.get_width() / 2, screen.get_height() / 2 + 100)
 
-player = Player(player_image, (screen.get_width() / 2, screen.get_height() / 2))
+player = Player(player_image, (screen.get_width() / 2, screen.get_height() / 2), xp_bar=xp_bar)
 enemies = []
 active_explosions = []
 
@@ -34,8 +37,11 @@ def reset_game() -> None:
     if game_over:
         active_items = []
     player.collected_items = []  # Reset collected items
-    player.level = 0  # Reset level
+    player.level = 1  # Reset level
+    player.xp = 0
     active_items.clear()
+    xp_bar.current_xp = 0
+    xp_bar.max_xp = 10
 
 #MAIN GAME LOOP
 while running:
@@ -115,6 +121,8 @@ while running:
             if isinstance(item, Crystal):
                 item.draw(screen)
             item.draw(screen)
+        
+        xp_bar.draw(screen)
         
     else:
         game_over_text = font.render("Game Over", True, (255, 0, 0))

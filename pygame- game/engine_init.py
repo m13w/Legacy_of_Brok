@@ -42,7 +42,7 @@ class Bullet:
         screen.blit(self.image, self.rect.topleft)
 
 class Player:
-    def __init__(self, image, position):
+    def __init__(self, image, position, xp_bar):
         self.image = image
         self.rect = image.get_rect(center=position)
         self.radius = PLAYER_COL_RADIUS
@@ -54,8 +54,10 @@ class Player:
         self.shoot_cooldown = 0
         self.shoot_delay = 0.35
         self.gun_direction = pygame.Vector2(1, 0)
-        self.level = 0
+        self.xp = 0
+        self.level = 1
         self.window_bounds = pygame.display.get_surface().get_rect()
+        self.xp_bar = xp_bar
 
     def shoot(self, mouse_pos):
         if self.shoot_cooldown <= 0:
@@ -91,8 +93,14 @@ class Player:
         for item in active_items[:]:
             if self.rect.colliderect(item.rect):
                 active_items.remove(item)
-                self.level += 1
-                print(self.level) #debug console visual
+                self.xp += 1
+                self.xp_bar.update(1)  # Increment the XP bar by 1 for each collected crystal
+                if self.xp_bar.current_xp == self.xp_bar.max_xp:
+                    self.xp_bar.current_xp = 0
+                    self.xp_bar.max_xp += 5
+                    self.level += 1
+                print("xp:", self.xp)  # debug console visual
+                print("level: ", self.level) #debug console visual
 
     def draw(self, screen):
         screen.blit(self.image, self.rect.topleft)
@@ -138,3 +146,22 @@ class Enemy:
     def drop_crystal(self):
         crystal = Crystal(self.drop_crystal, self.rect.center)
         active_items.append(crystal)
+
+class XPBar:
+    def __init__(self, max_xp):
+        self.max_xp = max_xp
+        self.current_xp = 0
+        self.bar_color = (12, 93, 130)  # bar color
+        self.bar_color2 = (24,159,192)  # fill color
+        self.bar_rect = pygame.Rect(10, 10, 200, 20)  # Adjust the position and size as needed
+
+    def update(self, collected_xp):
+        # Update the XP bar based on collected XP
+        self.current_xp = min(self.max_xp, self.current_xp + collected_xp)
+
+    def draw(self, screen):
+        # Draw the XP bar on the screen
+        pygame.draw.rect(screen, self.bar_color, self.bar_rect)
+        fill_width = (self.current_xp / self.max_xp) * self.bar_rect.width
+        fill_rect = pygame.Rect(self.bar_rect.left, self.bar_rect.top, fill_width, self.bar_rect.height)
+        pygame.draw.rect(screen, self.bar_color2, fill_rect)
