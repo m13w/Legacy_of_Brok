@@ -70,7 +70,11 @@ while running:
 
         # Remove bullets and enemies when off-screen
         for bullet in player.projectiles[:]:
-            if bullet.rect.left > screen.get_width() or bullet.rect.right < 0 or bullet.rect.top > screen.get_height() or bullet.rect.bottom < 0:
+            if (bullet.rect.left > screen.get_width() 
+                or bullet.rect.right < 0 
+                or bullet.rect.top > screen.get_height() 
+                or bullet.rect.bottom < 0
+            ):
                 player.projectiles.remove(bullet)
 
         #Colision test enemies
@@ -114,12 +118,18 @@ while running:
         
     else:
         game_over_text = font.render("Game Over", True, (255, 0, 0))
-        text_rect = game_over_text.get_rect(center=(screen.get_width() / 2, screen.get_height() / 2))
+        text_rect = game_over_text.get_rect(
+            center=(screen.get_width() / 2, screen.get_height() / 2)
+        )
         screen.blit(game_over_text, text_rect)
         screen.blit(reset_image, reset_button_rect)
         mouse_x, mouse_y = pygame.mouse.get_pos()
         mouse_clicked = pygame.mouse.get_pressed()
-        if reset_button_rect.collidepoint(mouse_x, mouse_y) and mouse_clicked[0]:
+        
+        if (
+            reset_button_rect.collidepoint(mouse_x, mouse_y) 
+            and mouse_clicked[0]
+        ):
             reset_game()
 
     pygame.display.flip()

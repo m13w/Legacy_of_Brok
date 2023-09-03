@@ -7,7 +7,7 @@ enemies = []
 active_items = []
 
 class Explosion:
-    def __init__(self, image, position, duration) -> None:
+    def __init__(self, image, position, duration):
         self.image = image
         self.rect = image.get_rect(center= position)
         self.duration = duration
@@ -15,9 +15,7 @@ class Explosion:
     
     def update(self):
         current_time = pygame.time.get_ticks()
-        if current_time - self.start_time >= self.duration:
-            return True
-        return False
+        return current_time - self.start_time >= self.duration
 
     def draw(self, screen):
         screen.blit(self.image, self.rect.topleft)
@@ -128,11 +126,7 @@ class Enemy:
 
     def check_collision(self, player):
         distance = pygame.math.Vector2(player.rect.center).distance_to(self.rect.center)
-
-        if distance < player.radius + self.radius:
-            return True
-        else:
-            return False
+        return distance < player.radius + self.radius
         
     def kill(self):
         crytal = Crystal(drop_image, self.rect.center)
