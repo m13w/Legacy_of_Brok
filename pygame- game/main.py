@@ -1,10 +1,10 @@
+""" un brotato cu mecanici de upgrade de chicken invaders - main file by VladIfju and CiprianPopa"""
 import pygame
 import pygame.mask
 import random
 from engine_init import Crystal, Player, Enemy, active_items
 from load import background_image, player_image, enemy_images, reset_image, gun_image, projectile_image, drop_image
 import sys
-""" un brotato cu mecanici de upgrade de chicken invaders """
 
 
 # pygame setup
