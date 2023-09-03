@@ -41,7 +41,7 @@ def reset_game() -> None:
     player.level = 0  # Reset level
 
 
-
+#MAIN GAME LOOP
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -50,7 +50,7 @@ while running:
     mouse_pos = pygame.mouse.get_pos()
 
     if not game_over:
-        screen.blit(background_image, (0, 0))
+        screen.blit(background_image, (0, 0))  #DRAW BACKGROUND
 
         keys = pygame.key.get_pressed()
         player.update(dt, keys, mouse_pos=mouse_pos)
@@ -72,15 +72,15 @@ while running:
             if bullet.rect.left > screen.get_width() or bullet.rect.right < 0 or bullet.rect.top > screen.get_height() or bullet.rect.bottom < 0:
                 player.projectiles.remove(bullet)
 
+        #Colision test enemies
         for enemy in enemies[:]:
             enemy.update(dt, player)
             if enemy.check_collision(player):
                 game_over = True
                 break
 
-        ################################################################################################
         # Spawn enemies from random edges
-        if random.random() < 0.04:  # Adjust the spawn rate as needed
+        if random.random() < 0.04:  #SPAWN RATE
             spawn_edge = random.choice(["top", "bottom", "left", "right"])
             if spawn_edge == "top":
                 spawn_point = pygame.Vector2(random.uniform(0, screen.get_width()), 0)
@@ -94,16 +94,6 @@ while running:
             enemy_image = random.choice(enemy_images)
             enemy = Enemy(enemy_image, spawn_point)
             enemies.append(enemy)
-
-        # Update enemy positions
-        for enemy in enemies:
-            enemy.update(dt, player)
-        # pygame.draw.circle(screen, (255, 0, 0), player.rect.center, player.radius + 5) # colision viewer circle radius ceva
-
-        for enemy in enemies:
-            # pygame.draw.circle(screen, (255, 0, 0), enemy.rect.center, enemy.radius + 5) # colision viewer circle radius ceva
-            if enemy.check_collision(player):
-                game_over = True
 
         for bullet in player.projectiles:
             bullet.update(dt)
@@ -121,10 +111,8 @@ while running:
             if isinstance(item, Crystal):
                 item.draw(screen)
 
-
             item.draw(screen)
         
-
     else:
         game_over_text = font.render("Game Over", True, (255, 0, 0))
         text_rect = game_over_text.get_rect(center=(screen.get_width() / 2, screen.get_height() / 2))

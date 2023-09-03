@@ -1,0 +1,40 @@
+~~~~ wiki with theory and help for certain things in Legacy of Brok game 
+_________________________________________________________________________________________________________________________________________________________________
+what is dt?
+
+In your game code, the variable dt typically stands for "delta time." 
+Delta time is a measure of the time that has passed between two consecutive frames in a game. 
+It is often used in game development to make game logic and animations frame rate-independent.
+
+Here's how dt is commonly used:
+
+Frame Rate Independence: By multiplying the speed or velocity of game objects by dt, 
+you ensure that the movement of objects remains consistent, regardless of the frame rate. 
+This prevents objects from moving too quickly on faster systems or too slowly on slower systems.
+
+Smooth Animations: When updating animations, dt can be used to control the rate at which frames change, 
+ensuring smooth and consistent animations.
+
+Physics Simulation: In physics simulations within games, 
+dt is used to calculate the change in positions and velocities of objects over time, 
+taking into account the frame rate.
+
+
+Here's a simplified example of how dt might be used to update the position of a game object based on its velocity:
+
+#Inside the game loop
+while running:
+    # Calculate delta time (time since last frame)
+    dt = clock.tick(60) / 1000  # Assuming a target frame rate of 60 FPS
+
+    # Update the position of a game object based on its velocity
+    object.x += object.velocity_x * dt
+    object.y += object.velocity_y * dt
+
+    # Rest of the game logic and rendering
+
+_________________________________________________________________________________________________________________________________________________________________
+Collision visualizer for player/ enemies.
+
+        # pygame.draw.circle(screen, (255, 0, 0), player.rect.center, player.radius + 5) # colision viewer circl
+
