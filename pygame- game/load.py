@@ -17,6 +17,12 @@ reset_image = pygame.transform.scale(reset_image, (300, 100))
 gun_image = pygame.image.load(ASSETS_PATH + "gun.png")
 gun_image = pygame.transform.scale(gun_image, (80, 80))
 
+gun_image_rev = pygame.image.load(ASSETS_PATH + "gun-rev.png")
+gun_image_rev = pygame.transform.scale(gun_image_rev, (80, 80))
+
+gun_image = pygame.image.load(ASSETS_PATH + "gun-rev.png")
+gun_image = pygame.transform.scale(gun_image, (80, 80))
+
 projectile_image = pygame.image.load(ASSETS_PATH + "bullet.png")
 projectile_image = pygame.transform.scale(projectile_image, (20, 20))
 
