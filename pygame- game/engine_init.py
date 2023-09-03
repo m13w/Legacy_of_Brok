@@ -35,7 +35,7 @@ class Player:
         self.radius = PLAYER_COL_RADIUS
         self.gun_image = gun_image
         self.gun_rect = self.gun_image.get_rect()
-        self.gun_offset = pygame.Vector2(75, 25) #se refera la pozitia relativa fata de player
+        self.gun_offset = pygame.Vector2(30, 30) #se refera la pozitia relativa fata de player
         self.gun_angle = 0
         self.projectiles = []
         self.shoot_cooldown = 0
