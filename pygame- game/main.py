@@ -6,6 +6,7 @@ from engine_init import Crystal, Player, Enemy, active_items
 from load import background_image, player_image, enemy_images, reset_image, gun_image, projectile_image, drop_image
 import sys
 
+ENEMY_SPAWN_RATE = 0.02
 
 # pygame setup
 pygame.init()
@@ -39,6 +40,7 @@ def reset_game() -> None:
         active_items = []
     player.collected_items = []  # Reset collected items
     player.level = 0  # Reset level
+    active_items.clear()
 
 
 #MAIN GAME LOOP
@@ -80,7 +82,7 @@ while running:
                 break
 
         # Spawn enemies from random edges
-        if random.random() < 0.00:  #SPAWN RATE
+        if random.random() < ENEMY_SPAWN_RATE:  #SPAWN RATE
             spawn_edge = random.choice(["top", "bottom", "left", "right"])
             if spawn_edge == "top":
                 spawn_point = pygame.Vector2(random.uniform(0, screen.get_width()), 0)

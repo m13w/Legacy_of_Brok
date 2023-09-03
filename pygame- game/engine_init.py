@@ -4,6 +4,8 @@ from load import gun_image, gun_image_rev, projectile_image,drop_image
 
 PLAYER_COL_RADIUS = 40
 ENEMY_COL_RADIUS = 40
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
 enemies = []
 active_items = []
 
@@ -42,6 +44,7 @@ class Player:
         self.shoot_delay = 0.2
         self.gun_direction = pygame.Vector2(1, 0)
         self.level = 0
+        self.window_bounds = pygame.display.get_surface().get_rect() # Get window bounds
 
     def shoot(self, mouse_pos):
         if self.shoot_cooldown <= 0:
@@ -62,13 +65,13 @@ class Player:
 
     def update(self, dt, keys, mouse_pos):
         #player movement
-        if keys[pygame.K_w]:
+        if keys[pygame.K_w] and self.rect.top > self.window_bounds.top:
             self.rect.y -= 300 * dt
-        if keys[pygame.K_s]:
+        if keys[pygame.K_s] and self.rect.bottom < self.window_bounds.bottom:
             self.rect.y += 300 * dt
-        if keys[pygame.K_a]:
+        if keys[pygame.K_a] and self.rect.left > self.window_bounds.left:
             self.rect.x -= 300 * dt
-        if keys[pygame.K_d]:
+        if keys[pygame.K_d] and self.rect.right < self.window_bounds.right:
             self.rect.x += 300 * dt
 
         self.gun_rect.center = self.rect.center + self.gun_offset
