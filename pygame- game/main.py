@@ -80,7 +80,7 @@ while running:
                 break
 
         # Spawn enemies from random edges
-        if random.random() < 0.04:  #SPAWN RATE
+        if random.random() < 0.00:  #SPAWN RATE
             spawn_edge = random.choice(["top", "bottom", "left", "right"])
             if spawn_edge == "top":
                 spawn_point = pygame.Vector2(random.uniform(0, screen.get_width()), 0)

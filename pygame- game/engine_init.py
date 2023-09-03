@@ -1,6 +1,6 @@
 import pygame
 import math
-from load import gun_image, projectile_image,drop_image
+from load import gun_image, gun_image_rev, projectile_image,drop_image
 
 PLAYER_COL_RADIUS = 40
 ENEMY_COL_RADIUS = 40
@@ -96,10 +96,12 @@ class Player:
     def draw(self, screen):
         screen.blit(self.image, self.rect.topleft)
         rotated_gun = pygame.transform.rotate(self.gun_image, -self.gun_angle)  # Rotate gun image
-
-        if self.gun_angle > 90 or self.gun_angle < -90:
-            rotated_gun = pygame.transform.flip(rotated_gun, flip_x=False,flip_y=True)
         
+        if self.gun_angle > 90 or self.gun_angle < -90:
+            self.gun_image = gun_image_rev
+        else:
+            self.gun_image = gun_image
+            
 
         rotated_rect = rotated_gun.get_rect(center=self.gun_rect.center)
         screen.blit(rotated_gun, rotated_rect.topleft)
