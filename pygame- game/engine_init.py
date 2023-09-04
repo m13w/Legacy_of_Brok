@@ -1,7 +1,8 @@
 import pygame
+import random
 import math
-from load import gun_image, gun_image_rev, projectile_image,drop_image
-from user_settings import ENEMY_COL_RADIUS, PLAYER_COL_RADIUS, BULLET_SPEED
+from load import gun_image, gun_image_rev, projectile_image,drop_image, enemy_images
+from user_settings import ENEMY_COL_RADIUS, PLAYER_COL_RADIUS, BULLET_SPEED, ENEMY_SPAWN_RATE
 
 enemies = []
 active_items = []
@@ -48,7 +49,7 @@ class Player:
         self.radius = PLAYER_COL_RADIUS
         self.gun_image = gun_image
         self.gun_rect = self.gun_image.get_rect()
-        self.gun_offset = pygame.Vector2(30, 30) #player - gun relative position.
+        self.gun_offset = pygame.Vector2(30, 30) # player-gun relative position.
         self.gun_angle = 0
         self.projectiles = []
         self.shoot_cooldown = 0
@@ -59,6 +60,7 @@ class Player:
         self.window_bounds = pygame.display.get_surface().get_rect()
         self.xp_bar = xp_bar
 
+        
     def shoot(self, mouse_pos):
         if self.shoot_cooldown <= 0:
             direction = pygame.Vector2(mouse_pos[0] - self.rect.centerx, mouse_pos[1] - self.rect.centery)
@@ -115,11 +117,31 @@ class Player:
         screen.blit(rotated_gun, rotated_rect.topleft)
 
 class Enemy:
+
+    enemies = []
+
     def __init__(self, image, spawn_point):
         self.image = image
         self.rect = image.get_rect(center=spawn_point)
         self.radius = ENEMY_COL_RADIUS
         self.speed = 100
+
+    @classmethod
+    def spawn_random_enemy(cls, screen_width, screen_height):
+        if random.random() < ENEMY_SPAWN_RATE:
+            spawn_edge = random.choice(["top", "bottom", "left", "right"])
+            if spawn_edge == "top":
+                spawn_point = pygame.Vector2(random.uniform(0, screen_width), 0)
+            elif spawn_edge == "bottom":
+                spawn_point = pygame.Vector2(random.uniform(0, screen_width), screen_height)
+            elif spawn_edge == "left":
+                spawn_point = pygame.Vector2(0, random.uniform(0, screen_height))
+            else:
+                spawn_point = pygame.Vector2(screen_width, random.uniform(0, screen_height))
+
+            enemy_image = random.choice(enemy_images)
+            enemy = cls(enemy_image, spawn_point)
+            cls.enemies.append(enemy)        
 
     def update(self, dt, player):
         direction = pygame.Vector2(player.rect.centerx - self.rect.centerx, player.rect.centery - self.rect.centery)
@@ -165,3 +187,21 @@ class XPBar:
         fill_width = (self.current_xp / self.max_xp) * self.bar_rect.width
         fill_rect = pygame.Rect(self.bar_rect.left, self.bar_rect.top, fill_width, self.bar_rect.height)
         pygame.draw.rect(screen, self.bar_color2, fill_rect)
+
+class HPBar:
+    def __init__(self, max_hp):
+        self.max_hp = max_hp
+        self.current_hp = max_hp
+        self.bar_color = (255, 0, 0)  # Red bar for HP
+        self.bar_rect = pygame.Rect(10, 40, 200, 20)  # Adjust position and size as needed
+
+    def update(self, damage):
+        # Update the HP bar based on damage taken
+        self.current_hp = max(0, self.current_hp - damage)
+
+    def draw(self, screen):
+        # Draw the HP bar on the screen
+        pygame.draw.rect(screen, self.bar_color, self.bar_rect)
+        fill_width = (self.current_hp / self.max_hp) * self.bar_rect.width
+        fill_rect = pygame.Rect(self.bar_rect.left, self.bar_rect.top, fill_width, self.bar_rect.height)
+        pygame.draw.rect(screen, (0, 255, 0), fill_rect)  # Green fill for HP

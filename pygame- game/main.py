@@ -4,10 +4,23 @@ Brotato with chicken invaders upgrade mechanics - main file developed by VladIfj
 import pygame
 import random
 import sys
-from user_settings import ENEMY_SPAWN_RATE, WINDOW_WIDTH, WINDOW_HEIGHT
-from engine_init import Crystal, Player, Enemy, Explosion, active_items
-from load import background_image, player_image, enemy_images, reset_image, shot_effect
-from engine_init import XPBar
+from user_settings import WINDOW_WIDTH, WINDOW_HEIGHT
+from engine_init import (
+    Crystal, 
+    Player, 
+    Enemy, 
+    Explosion, 
+    active_items, 
+    HPBar,
+    XPBar
+)
+from load import (
+    background_image, 
+    player_image, 
+    reset_image, 
+    shot_effect
+)
+
 
 # pygame setup
 pygame.init()
@@ -21,27 +34,35 @@ font = pygame.font.Font(None, 64)
 max_xp = 10
 xp_bar = XPBar(max_xp=max_xp)
 dt = 0
+start_hp = 100  # Adjust the maximum HP as needed
+hp_bar = HPBar(start_hp)
+last_damage_time = 0
+damage_cooldown = 500 #ms 1k = 1s
+
 
 reset_button_rect = reset_image.get_rect()
-reset_button_rect.center = (screen.get_width() / 2, screen.get_height() / 2 + 100)
+reset_button_rect.center = (WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2 + 100)
 
-player = Player(player_image, (screen.get_width() / 2, screen.get_height() / 2), xp_bar=xp_bar)
-enemies = []
+player = Player(
+    player_image,
+    (WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2), 
+    xp_bar=xp_bar
+    )
+
 active_explosions = []
 
-def reset_game() -> None:
+def reset_game():
     global game_over, player_pos, enemies, active_items
     game_over = False
     player_pos = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)
-    enemies = []
-    if game_over:
-        active_items = []
+    Enemy.enemies = []
     player.collected_items = []  # Reset collected items
     player.level = 1  # Reset level
     player.xp = 0
     active_items.clear()
     xp_bar.current_xp = 0
     xp_bar.max_xp = 10
+    hp_bar.current_hp = 100
 
 #MAIN GAME LOOP
 while running:
@@ -60,10 +81,10 @@ while running:
         # Detect and handle bullet-enemy collisions + explosions
         for bullet in player.projectiles[:]:
             bullet.update(dt)
-            for enemy in enemies[:]:
+            for enemy in Enemy.enemies[:]:
                 if bullet.rect.colliderect(enemy.rect):
                     player.projectiles.remove(bullet)
-                    enemies.remove(enemy)
+                    Enemy.enemies.remove(enemy)
                     enemy.kill()
                     explosion = Explosion(shot_effect, enemy.rect.center, 200) # 200 = ms
                     active_explosions.append(explosion)
@@ -84,27 +105,19 @@ while running:
                 player.projectiles.remove(bullet)
 
         #Colision test enemies
-        for enemy in enemies[:]:
+        for enemy in Enemy.enemies[:]:
             enemy.update(dt, player)
             if enemy.check_collision(player):
-                game_over = True
+                current_time = pygame.time.get_ticks()
+                if current_time - last_damage_time > damage_cooldown:
+                    hp_bar.update(10)
+                    last_damage_time = current_time
+                    if hp_bar.current_hp <= 0:
+                        game_over = True
                 break
-
-        #Spawning mechanism
-        if random.random() < ENEMY_SPAWN_RATE: 
-            spawn_edge = random.choice(["top", "bottom", "left", "right"])
-            if spawn_edge == "top":
-                spawn_point = pygame.Vector2(random.uniform(0, screen.get_width()), 0)
-            elif spawn_edge == "bottom":
-                spawn_point = pygame.Vector2(random.uniform(0, screen.get_width()), screen.get_height())
-            elif spawn_edge == "left":
-                spawn_point = pygame.Vector2(0, random.uniform(0, screen.get_height()))
-            else:
-                spawn_point = pygame.Vector2(screen.get_width(), random.uniform(0, screen.get_height()))
-
-            enemy_image = random.choice(enemy_images)
-            enemy = Enemy(enemy_image, spawn_point)
-            enemies.append(enemy)
+        
+        #enemy spawner.
+        Enemy.spawn_random_enemy(WINDOW_WIDTH, WINDOW_HEIGHT)
 
         for bullet in player.projectiles:
             bullet.update(dt)
@@ -114,7 +127,7 @@ while running:
 
         firing_point = player.rect.center + player.gun_offset.rotate(-player.gun_angle)
 
-        for enemy in enemies:
+        for enemy in Enemy.enemies:
             enemy.draw(screen)
         
         for item in active_items[:]:
@@ -123,6 +136,7 @@ while running:
             item.draw(screen)
         
         xp_bar.draw(screen)
+        hp_bar.draw(screen)
         
     else:
         game_over_text = font.render("Game Over", True, (255, 0, 0))
