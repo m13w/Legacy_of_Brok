@@ -80,23 +80,9 @@ class Game:
         active_items.clear()
         self.xp_bar.current_xp = 0
         self.xp_bar.max_xp = START_MAX_XP
+        self.xp_bar.level = 1
         self.hp_bar.current_hp = START_MAX_HP
 
-
-#old version reset_game fun, for future implementation, execute order of instructions.
-    # def reset_game(self):
-    #     self.game_over = False
-    #     self.player.rect.center = (WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2)
-    #     Enemy.enemies = []
-    #     Enemy.active_explosions = []
-    #     self.player.collected_items = []  # Reset collected items
-    #     self.player.level = 1  # Reset level
-    #     self.player.xp = 0
-    #     active_items.clear()
-    #     self.xp_bar.current_xp = 0
-    #     self.xp_bar.max_xp = 10
-    #     self.hp_bar.current_hp = 100
-    #     self.player.rect.center = (WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2)
 
 #GAME MAIN LOOP
     def run(self):
@@ -366,20 +352,34 @@ class XPBar:
     def __init__(self, max_xp):
         self.max_xp = max_xp
         self.current_xp = 0
+        self.level = 1  # Initialize the level
         self.bar_color = (12, 93, 130)  # bar color
-        self.bar_color2 = (24,159,192)  # fill color
+        self.bar_color2 = (24, 159, 192)  # fill color
         self.bar_rect = pygame.Rect(10, 10, 200, 20)  # Adjust the position and size as needed
+        self.font = pygame.font.Font(None, 28)  # Create a font for displaying text
 
     def update(self, collected_xp):
         # Update the XP bar based on collected XP
         self.current_xp = min(self.max_xp, self.current_xp + collected_xp)
+        if self.current_xp == self.max_xp:
+            self.level += 1  # Increase the level when XP reaches max
 
     def draw(self, screen):
-        # Draw the XP bar on the screen
+        # Draw the XP bar and level on the screen
         pygame.draw.rect(screen, self.bar_color, self.bar_rect)
         fill_width = (self.current_xp / self.max_xp) * self.bar_rect.width
         fill_rect = pygame.Rect(self.bar_rect.left, self.bar_rect.top, fill_width, self.bar_rect.height)
         pygame.draw.rect(screen, self.bar_color2, fill_rect)
+
+        # Calculate the position of the level text on the right side of the bar
+        level_text = self.font.render(f"LV.{self.level}", True, (255, 255, 255))
+        text_rect = level_text.get_rect()
+        text_rect.right = self.bar_rect.right - 10  # Adjust the right margin
+        text_rect.centery = self.bar_rect.centery  # Center vertically
+
+        screen.blit(level_text, text_rect)
+
+
 
 class HPBar:
     def __init__(self, max_hp):
