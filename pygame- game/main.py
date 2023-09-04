@@ -1,10 +1,15 @@
 """
 Brotato with chicken invaders upgrade mechanics - main file developed by VladIfju and CiprianPopa
 """
-import pygame
-import random
-import sys
-from user_settings import WINDOW_WIDTH, WINDOW_HEIGHT
+import pygame, sys
+from user_settings import (
+    WINDOW_WIDTH, 
+    WINDOW_HEIGHT,
+    START_MAX_HP,
+    START_MAX_XP,
+    DAMAGE_COOLDOWN,
+    FPS
+    )
 from engine_init import (
     Crystal, 
     Player, 
@@ -21,41 +26,35 @@ from load import (
     shot_effect
 )
 
-
-# pygame setup
+# Pygame Init
 pygame.init()
 screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 clock = pygame.time.Clock()
-running = True
-game_over = False
 pygame.display.set_caption("Legacy of Brok")
 pygame.display.set_icon(player_image)
 font = pygame.font.Font(None, 64)
-max_xp = 10
-xp_bar = XPBar(max_xp=max_xp)
+
+# Game init
+running = True
+game_over = False
 dt = 0
-start_hp = 100  # Adjust the maximum HP as needed
-hp_bar = HPBar(start_hp)
+damage_cooldown = 500
+# Player and UI init
+xp_bar = XPBar(max_xp=START_MAX_XP)
+hp_bar = HPBar(max_hp=START_MAX_HP)
 last_damage_time = 0
-damage_cooldown = 500 #ms 1k = 1s
-
-
 reset_button_rect = reset_image.get_rect()
 reset_button_rect.center = (WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2 + 100)
 
-player = Player(
-    player_image,
-    (WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2), 
-    xp_bar=xp_bar
-    )
+player = Player((WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2), xp_bar=xp_bar)
 
-active_explosions = []
 
 def reset_game():
     global game_over, player_pos, enemies, active_items
     game_over = False
     player_pos = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)
     Enemy.enemies = []
+    Enemy.active_explosions = []
     player.collected_items = []  # Reset collected items
     player.level = 1  # Reset level
     player.xp = 0
@@ -78,6 +77,10 @@ while running:
         player.update(dt, keys, mouse_pos=mouse_pos)
         player.draw(screen)
 
+        # Update enemy movement
+        for enemy in Enemy.enemies[:]:
+            enemy.update(dt, player)
+
         # Detect and handle bullet-enemy collisions + explosions
         for bullet in player.projectiles[:]:
             bullet.update(dt)
@@ -87,11 +90,11 @@ while running:
                     Enemy.enemies.remove(enemy)
                     enemy.kill()
                     explosion = Explosion(shot_effect, enemy.rect.center, 200) # 200 = ms
-                    active_explosions.append(explosion)
+                    Enemy.active_explosions.append(explosion)
                     break   
-        for explosion in active_explosions[:]:
+        for explosion in Enemy.active_explosions[:]:
             if explosion.update():
-                active_explosions.remove(explosion)
+                Enemy.active_explosions.remove(explosion)
             else:
                 explosion.draw(screen)
 
@@ -106,15 +109,19 @@ while running:
 
         #Colision test enemies
         for enemy in Enemy.enemies[:]:
-            enemy.update(dt, player)
             if enemy.check_collision(player):
                 current_time = pygame.time.get_ticks()
-                if current_time - last_damage_time > damage_cooldown:
+                if current_time - last_damage_time > DAMAGE_COOLDOWN:
                     hp_bar.update(10)
                     last_damage_time = current_time
                     if hp_bar.current_hp <= 0:
                         game_over = True
                 break
+            
+        # Reduce damage cooldown over time
+        if damage_cooldown > 0:
+            damage_cooldown -= dt
+            damage_cooldown = max(0, damage_cooldown)  # Ensure it doesn't go negative        
         
         #enemy spawner.
         Enemy.spawn_random_enemy(WINDOW_WIDTH, WINDOW_HEIGHT)
@@ -155,7 +162,7 @@ while running:
             reset_game()
 
     pygame.display.flip()
-    dt = clock.tick(60) / 1000  # limits FPS to 60
+    dt = clock.tick(FPS) / 1000  # limits FPS to 60
 
 pygame.quit()
 sys.exit()

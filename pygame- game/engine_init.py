@@ -1,7 +1,7 @@
 import pygame
 import random
 import math
-from load import gun_image, gun_image_rev, projectile_image,drop_image, enemy_images
+from load import gun_image, gun_image_rev, projectile_image,drop_image, enemy_images, player_image
 from user_settings import ENEMY_COL_RADIUS, PLAYER_COL_RADIUS, BULLET_SPEED, ENEMY_SPAWN_RATE
 
 enemies = []
@@ -43,9 +43,9 @@ class Bullet:
         screen.blit(self.image, self.rect.topleft)
 
 class Player:
-    def __init__(self, image, position, xp_bar):
-        self.image = image
-        self.rect = image.get_rect(center=position)
+    def __init__(self, position, xp_bar):
+        self.image = player_image
+        self.rect = self.image.get_rect(center=position)
         self.radius = PLAYER_COL_RADIUS
         self.gun_image = gun_image
         self.gun_rect = self.gun_image.get_rect()
@@ -60,7 +60,7 @@ class Player:
         self.window_bounds = pygame.display.get_surface().get_rect()
         self.xp_bar = xp_bar
 
-        
+
     def shoot(self, mouse_pos):
         if self.shoot_cooldown <= 0:
             direction = pygame.Vector2(mouse_pos[0] - self.rect.centerx, mouse_pos[1] - self.rect.centery)
@@ -119,7 +119,8 @@ class Player:
 class Enemy:
 
     enemies = []
-
+    active_explosions = []
+    
     def __init__(self, image, spawn_point):
         self.image = image
         self.rect = image.get_rect(center=spawn_point)
