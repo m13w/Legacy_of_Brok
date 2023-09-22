@@ -33,6 +33,9 @@ drop_image = pygame.transform.scale(drop_image, (40, 40))
 shot_effect = pygame.image.load(ASSETS_PATH + "shot_effect.png")
 shot_effect = pygame.transform.scale(shot_effect, (50, 100))
 
+magma_projectile_img = pygame.image.load(ASSETS_PATH + "magma_projectile.png")
+magma_projectile_img = pygame.transform.scale(shot_effect, (20, 20))
+
 misterious_enemy = pygame.transform.scale(misterious_enemy, (100, 100))
 
 

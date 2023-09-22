@@ -2,6 +2,7 @@ import pygame
 import random
 import math
 import sys
+from enum import Enum
 from user_settings import (
     WINDOW_HEIGHT,
     WINDOW_WIDTH,
@@ -28,6 +29,7 @@ from load import (
     enemy_images,
     drop_image,
     misterious_enemy,
+    magma_projectile_img,
 )
 
 enemies = []
@@ -300,11 +302,17 @@ class Enemy:
     enemies = []
     active_explosions = []
 
-    def __init__(self, image, spawn_point):
+    def __init__(self, image, spawn_point, enemy_type):
         self.image = image
         self.rect = image.get_rect(center=spawn_point)
         self.radius = ENEMY_COL_RADIUS
-        self.speed = 100
+                # Adjust speed based on enemy type
+        if enemy_type == EnemyType.NORMAL:
+            self.speed = 100
+        elif enemy_type == EnemyType.FAST:
+            self.speed = 200
+        elif enemy_type == EnemyType.STRONG:
+            self.speed = 50
 
     @classmethod
     def spawn_random_enemy(cls, screen_width, screen_height):
@@ -319,9 +327,10 @@ class Enemy:
             else:
                 spawn_point = pygame.Vector2(screen_width, random.uniform(0, screen_height))
 
+            enemy_type = random.choice([EnemyType.NORMAL, EnemyType.FAST, EnemyType.STRONG])
             enemy_image = random.choice(enemy_images)
-            enemy = cls(enemy_image, spawn_point)
-            cls.enemies.append(enemy)        
+            enemy = cls(enemy_image, spawn_point, enemy_type)
+            cls.enemies.append(enemy)    
 
     def update(self, dt, player):
         direction = pygame.Vector2(player.rect.centerx - self.rect.centerx, player.rect.centery - self.rect.centery)
@@ -329,7 +338,16 @@ class Enemy:
 
         if distance > 0:
             direction.normalize_ip()
-            self.rect.move_ip(direction * self.speed * dt)
+
+            # Adjust movement based on distance and window bounds
+            movement = direction * min(self.speed * dt, distance)
+            new_position = self.rect.center + movement
+
+            # Clamp the new position within window bounds
+            self.rect.centerx = max(0, min(WINDOW_WIDTH, new_position[0]))
+            self.rect.centery = max(0, min(WINDOW_HEIGHT, new_position[1]))
+
+
 
     def draw(self, screen):
         screen.blit(self.image, self.rect.topleft)
@@ -397,3 +415,9 @@ class HPBar:
         fill_width = (self.current_hp / self.max_hp) * self.bar_rect.width
         fill_rect = pygame.Rect(self.bar_rect.left, self.bar_rect.top, fill_width, self.bar_rect.height)
         pygame.draw.rect(screen, (0, 255, 0), fill_rect)  # Green fill for HP
+
+class EnemyType(Enum):
+    NORMAL = 1
+    FAST = 2
+    STRONG = 3
+    # Add more enemy types as needed
