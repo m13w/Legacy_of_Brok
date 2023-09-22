@@ -9,6 +9,7 @@ enemy_image2 = pygame.image.load(ASSETS_PATH + "enemy2.png")
 enemy_image3 = pygame.image.load(ASSETS_PATH + "enemy3.gif")
 enemy_image4 = pygame.image.load(ASSETS_PATH + "enemy4.png")
 enemy_image5 = pygame.image.load(ASSETS_PATH + "enemy5.png")
+misterious_enemy = pygame.image.load(ASSETS_PATH + "misterious_enemy.gif")
 
 # Scale the images
 player_image = pygame.image.load(ASSETS_PATH + "character.png")
@@ -32,10 +33,13 @@ drop_image = pygame.transform.scale(drop_image, (40, 40))
 shot_effect = pygame.image.load(ASSETS_PATH + "shot_effect.png")
 shot_effect = pygame.transform.scale(shot_effect, (50, 100))
 
+misterious_enemy = pygame.transform.scale(misterious_enemy, (100, 100))
+
+
 enemy_images = [
     pygame.transform.scale(enemy_image1, (100, 100)),
     pygame.transform.scale(enemy_image2, (100, 100)),
     pygame.transform.scale(enemy_image3, (100, 100)),
     pygame.transform.scale(enemy_image4, (85, 100)),
-    pygame.transform.scale(enemy_image5, (100, 100))
+    pygame.transform.scale(enemy_image5, (100, 100)),
 ]

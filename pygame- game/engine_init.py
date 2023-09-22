@@ -27,6 +27,7 @@ from load import (
     projectile_image,
     enemy_images,
     drop_image,
+    misterious_enemy,
 )
 
 enemies = []
@@ -82,6 +83,7 @@ class Game:
         self.xp_bar.max_xp = START_MAX_XP
         self.xp_bar.level = 1
         self.hp_bar.current_hp = START_MAX_HP
+        self.player.projectiles.clear()
 
 
 #GAME MAIN LOOP
@@ -238,7 +240,6 @@ class Player:
         self.window_bounds = pygame.display.get_surface().get_rect()
         self.xp_bar = xp_bar
 
-
     def shoot(self, mouse_pos):
         if self.shoot_cooldown <= 0:
             direction = pygame.Vector2(mouse_pos[0] - self.rect.centerx, mouse_pos[1] - self.rect.centery)
@@ -378,8 +379,6 @@ class XPBar:
         text_rect.centery = self.bar_rect.centery  # Center vertically
 
         screen.blit(level_text, text_rect)
-
-
 
 class HPBar:
     def __init__(self, max_hp):
