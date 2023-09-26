@@ -6,7 +6,7 @@ background_image = pygame.image.load(ASSETS_PATH + "background1.jpg")
 
 enemy_image1 = pygame.image.load(ASSETS_PATH + "enemy.png")
 enemy_image2 = pygame.image.load(ASSETS_PATH + "enemy2.png")
-enemy_image3 = pygame.image.load(ASSETS_PATH + "enemy3.gif")
+magma_enemy = pygame.image.load(ASSETS_PATH + "enemy3.gif")
 enemy_image4 = pygame.image.load(ASSETS_PATH + "enemy4.png")
 enemy_image5 = pygame.image.load(ASSETS_PATH + "enemy5.png")
 misterious_enemy = pygame.image.load(ASSETS_PATH + "misterious_enemy.gif")
@@ -34,15 +34,15 @@ shot_effect = pygame.image.load(ASSETS_PATH + "shot_effect.png")
 shot_effect = pygame.transform.scale(shot_effect, (50, 100))
 
 magma_projectile_img = pygame.image.load(ASSETS_PATH + "magma_projectile.png")
-magma_projectile_img = pygame.transform.scale(shot_effect, (20, 20))
+magma_projectile_img = pygame.transform.scale(magma_projectile_img, (28, 28))
 
-misterious_enemy = pygame.transform.scale(misterious_enemy, (100, 100))
-
+magma_ball = pygame.image.load(ASSETS_PATH + "magma_ball.png")
+magma_ball = pygame.transform.scale(magma_ball, (25, 29))
 
 enemy_images = [
     pygame.transform.scale(enemy_image1, (100, 100)),
     pygame.transform.scale(enemy_image2, (100, 100)),
-    pygame.transform.scale(enemy_image3, (100, 100)),
+    pygame.transform.scale(magma_enemy, (100, 100)),
     pygame.transform.scale(enemy_image4, (85, 100)),
     pygame.transform.scale(enemy_image5, (100, 100)),
 ]
