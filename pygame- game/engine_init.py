@@ -178,7 +178,7 @@ class Game:
                 self.handle_player_enemy_collision(enemy)
                 break
             
-    def handle_player_enemy_collision(self, enemy):
+    def handle_player_enemy_collision(self, enemy): #not sure what enemy arg does here.
         current_time = pygame.time.get_ticks()
         if current_time - self.last_damage_time > DAMAGE_COOLDOWN:
             self.hp_bar.update(10)
