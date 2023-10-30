@@ -486,20 +486,23 @@ class EnemyType(Enum):
     STRONG = 3
     # Add more enemy types as needed
 
-class AnimatedSprite(pygame.sprite.Sprite):
-    def __init__(self, images, position, frame_duration):
-        super().__init__()
-        self.images = images
-        self.image = self.images[0]
-        self.rect = self.image.get_rect()
-        self.rect.center = position
-        self.frame_duration = frame_duration
-        self.current_frame = 0
-        self.frame_timer = 0
+
+# animation work in progess
+
+# class AnimatedSprite(pygame.sprite.Sprite):
+#     def __init__(self, images, position, frame_duration):
+#         super().__init__()
+#         self.images = images
+#         self.image = self.images[0]
+#         self.rect = self.image.get_rect()
+#         self.rect.center = position
+#         self.frame_duration = frame_duration
+#         self.current_frame = 0
+#         self.frame_timer = 0
     
-    def update(self, dt):
-        self.frame_timer += dt
-        if self.frame_timer >= self.frame_duration:
-            self.frame_timer = 0
-            self.current_frame = (self.current_frame + 1) % len(self.images)
-            self.image = self.images[self.current_frame]
+#     def update(self, dt):
+#         self.frame_timer += dt
+#         if self.frame_timer >= self.frame_duration:
+#             self.frame_timer = 0
+#             self.current_frame = (self.current_frame + 1) % len(self.images)
+#             self.image = self.images[self.current_frame]
